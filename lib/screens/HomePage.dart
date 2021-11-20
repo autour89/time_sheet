@@ -8,14 +8,10 @@ import 'package:time_sheet/screens/Widgets/edit_record.dart';
 import 'package:time_sheet/screens/Widgets/search_bar.dart';
 
 class HomePage extends GetView<HomeBloc> {
-  late SlidableController _slidableController;
   late Composer _composer;
 
   @override
   Widget build(BuildContext context) {
-    _slidableController = SlidableController(
-        onSlideIsOpenChanged: (_) => Slidable.of(context)?.close());
-
     return Scaffold(
         appBar: SearchBar(),
         body: SafeArea(
@@ -61,26 +57,36 @@ class HomePage extends GetView<HomeBloc> {
     var record = controller.records[index];
     return Slidable(
       key: Key(record.hashCode.toString()),
-      controller: _slidableController,
-      actionPane: SlidableDrawerActionPane(),
-      actionExtentRatio: 0.25,
-      actions: [
-        if (!record.isSubmitted)
-          IconSlideAction(
-            caption: 'Submit',
-            color: Colors.blue,
-            icon: Icons.archive,
-            onTap: () => controller.submitRecord(record),
+      startActionPane: ActionPane(
+        motion: const ScrollMotion(),
+        children: [
+          if (!record.isSubmitted)
+            SlidableAction(
+              label: 'Submit',
+              backgroundColor: Colors.blue,
+              icon: Icons.archive,
+              onPressed: (_) => {
+                // Slidable.of(context)
+                //     ?.dismiss(ResizeRequest(Duration(milliseconds: 0), () {})),
+                // Slidable.of(context)?.close(
+                //     duration: Duration(milliseconds: 0),
+                //     curve: Curves.bounceIn),
+                // controller.submitRecord(record)
+              },
+            ),
+        ],
+      ),
+      endActionPane: ActionPane(
+        motion: const ScrollMotion(),
+        children: [
+          SlidableAction(
+            label: 'Delete',
+            backgroundColor: Colors.red,
+            icon: Icons.delete,
+            onPressed: (_) => controller.removeRecord(record),
           ),
-      ],
-      secondaryActions: [
-        IconSlideAction(
-          caption: 'Delete',
-          color: Colors.red,
-          icon: Icons.delete,
-          onTap: () => controller.removeRecord(record),
-        ),
-      ],
+        ],
+      ),
       child: Card(
         child: Container(
           child: InkWell(
