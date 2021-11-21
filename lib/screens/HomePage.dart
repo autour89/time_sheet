@@ -8,7 +8,8 @@ import 'package:time_sheet/screens/Widgets/edit_record.dart';
 import 'package:time_sheet/screens/Widgets/search_bar.dart';
 
 class HomePage extends GetView<HomeBloc> {
-  late Composer _composer;
+  final FocusNode focusNode = FocusNode();
+  final TextEditingController recordTextController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -17,17 +18,19 @@ class HomePage extends GetView<HomeBloc> {
         body: SafeArea(
             child: Stack(
           children: [
-            _buildRecords(),
-            _composer = Composer(),
+            _buildRecords(context),
+            Composer(
+                recordTextController: recordTextController,
+                focusNode: focusNode),
           ],
         )),
-        floatingActionButton:
-            _buildAddbutton() // This trailing comma makes auto-formatting nicer for build methods.
+        floatingActionButton: _buildAddbutton(
+            context) // This trailing comma makes auto-formatting nicer for build methods.
         );
   }
 
   /// records list
-  Widget _buildRecords() {
+  Widget _buildRecords(BuildContext context) {
     return GetBuilder<HomeBloc>(
       builder: (c) => controller.records.isEmpty
           ? Center(
@@ -39,7 +42,7 @@ class HomePage extends GetView<HomeBloc> {
           : InkWell(
               onTap: () => {
                 c.newRecord = false,
-                _composer.dismissKeyboard,
+                dismissKeyboard(),
               },
               child: GetBuilder<HomeBloc>(
                   builder: (c) => ListView.builder(
@@ -65,14 +68,7 @@ class HomePage extends GetView<HomeBloc> {
               label: 'Submit',
               backgroundColor: Colors.blue,
               icon: Icons.archive,
-              onPressed: (_) => {
-                // Slidable.of(context)
-                //     ?.dismiss(ResizeRequest(Duration(milliseconds: 0), () {})),
-                // Slidable.of(context)?.close(
-                //     duration: Duration(milliseconds: 0),
-                //     curve: Curves.bounceIn),
-                // controller.submitRecord(record)
-              },
+              onPressed: (_) => {controller.submitRecord(record)},
             ),
         ],
       ),
@@ -130,13 +126,13 @@ class HomePage extends GetView<HomeBloc> {
   }
 
   /// build fab to show/hide record composer
-  Widget _buildAddbutton() {
+  Widget _buildAddbutton(BuildContext context) {
     return GetBuilder<HomeBloc>(
         builder: (c) => Visibility(
             child: FloatingActionButton(
               onPressed: () => {
                 c.newRecord = true,
-                _composer.showKeyboard(),
+                showKeyboard(),
               },
               tooltip: 'Add new record',
               child: Icon(Icons.add),
@@ -147,7 +143,7 @@ class HomePage extends GetView<HomeBloc> {
   /// show edit screen and update UI : records list and states related to it
   void _showEditDialog(BuildContext context, int index) async {
     controller.newRecord = false;
-    _composer.dismissKeyboard();
+    dismissKeyboard();
 
     if (!controller.records[index].isSubmitted) {
       RecordModel? result = await showDialog(
@@ -159,5 +155,16 @@ class HomePage extends GetView<HomeBloc> {
         controller.updateRecord(result, index);
       }
     }
+  }
+
+  ///This is a basic function to open keyboard.
+  void showKeyboard() {
+    focusNode.requestFocus();
+  }
+
+  /// close opened keyboard
+  void dismissKeyboard() {
+    recordTextController.clear();
+    focusNode.unfocus();
   }
 }

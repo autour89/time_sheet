@@ -4,8 +4,10 @@ import 'package:time_sheet/blocs/HomeBloc.dart';
 
 class Composer extends StatelessWidget {
   final String _hintText = 'Describe your task here...';
-  final FocusNode focusNode = FocusNode();
-  final TextEditingController recordTextController = TextEditingController();
+  final FocusNode focusNode;
+  final TextEditingController recordTextController;
+
+  Composer({required this.recordTextController, required this.focusNode});
 
   @override
   Widget build(BuildContext context) {
