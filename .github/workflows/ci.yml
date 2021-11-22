@@ -38,7 +38,7 @@ jobs:
       - run: flutter clean
       - run: flutter build ios --no-codesign
 
-  build_appbundle:
+  build_android:
     name: Build Flutter (Android)
     needs: [flutter-test]
     runs-on: ubuntu-latest
@@ -52,4 +52,11 @@ jobs:
           channel: "master"
       - run: flutter pub get
       - run: flutter clean
-      - run: flutter build appbundle
+      - run: flutter build apk --debug --split-per-abi
+      # - run: flutter build appbundle
+      - name: Push to releases
+        uses: ncipollo/release-action@v1.8.10
+        with:
+          artifacts: "build/app/outputs/apk/debug/*"
+          tag: v1.0.${{github.run_number}}
+          token: ${{secrets.TOKEN}}
