@@ -4,20 +4,28 @@ import 'package:time_sheet/blocs/HomeBloc.dart';
 
 class Composer extends StatelessWidget {
   final String _hintText = 'Describe your task here...';
-  final FocusNode focusNode;
-  final TextEditingController recordTextController;
-
-  Composer({required this.recordTextController, required this.focusNode});
+  final FocusNode focusNode = FocusNode();
+  final TextEditingController recordTextController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return _buildComposer();
   }
 
+  bool _updateState(HomeBloc bloc) {
+    if (bloc.composerActive) {
+      showKeyboard();
+    } else {
+      dismissKeyboard();
+    }
+
+    return bloc.composerActive;
+  }
+
   Widget _buildComposer() {
     return GetBuilder<HomeBloc>(
         builder: (c) => Visibility(
-              visible: c.composerActive,
+              visible: _updateState(c),
               child: Container(
                 child: Align(
                   alignment: Alignment.bottomCenter,
@@ -48,7 +56,6 @@ class Composer extends StatelessWidget {
                           child: TextButton(
                             onPressed: () => {
                               c.addRecord(recordTextController.text),
-                              dismissKeyboard()
                             },
                             child: FittedBox(
                               child: Text('Create'),

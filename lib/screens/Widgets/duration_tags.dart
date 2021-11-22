@@ -23,8 +23,11 @@ class _DurationTagsState extends State<DurationTags> {
 
   @override
   void initState() {
-    for (var i = 1; i < 13; i++) widget._hours.add(TagModel(hour: i));
     super.initState();
+
+    for (var i = 1; i < 13; i++) {
+      widget._hours.add(TagModel(hour: i));
+    }
 
     selected = TagModel(hour: widget.duration ?? 0);
   }

@@ -2,15 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:time_sheet/blocs/HomeBloc.dart';
-import 'package:time_sheet/models/RecordModel.dart';
 import 'package:time_sheet/screens/Widgets/composer.dart';
 import 'package:time_sheet/screens/Widgets/edit_record.dart';
 import 'package:time_sheet/screens/Widgets/search_bar.dart';
 
 class HomePage extends GetView<HomeBloc> {
-  final FocusNode focusNode = FocusNode();
-  final TextEditingController recordTextController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,9 +15,7 @@ class HomePage extends GetView<HomeBloc> {
             child: Stack(
           children: [
             _buildRecords(context),
-            Composer(
-                recordTextController: recordTextController,
-                focusNode: focusNode),
+            Composer(),
           ],
         )),
         floatingActionButton: _buildAddbutton(
@@ -42,7 +36,6 @@ class HomePage extends GetView<HomeBloc> {
           : InkWell(
               onTap: () => {
                 c.newRecord = false,
-                dismissKeyboard(),
               },
               child: GetBuilder<HomeBloc>(
                   builder: (c) => ListView.builder(
@@ -60,18 +53,6 @@ class HomePage extends GetView<HomeBloc> {
     var record = controller.records[index];
     return Slidable(
       key: Key(record.hashCode.toString()),
-      startActionPane: ActionPane(
-        motion: const ScrollMotion(),
-        children: [
-          if (!record.isSubmitted)
-            SlidableAction(
-              label: 'Submit',
-              backgroundColor: Colors.blue,
-              icon: Icons.archive,
-              onPressed: (_) => {controller.submitRecord(record)},
-            ),
-        ],
-      ),
       endActionPane: ActionPane(
         motion: const ScrollMotion(),
         children: [
@@ -132,7 +113,6 @@ class HomePage extends GetView<HomeBloc> {
             child: FloatingActionButton(
               onPressed: () => {
                 c.newRecord = true,
-                showKeyboard(),
               },
               tooltip: 'Add new record',
               child: Icon(Icons.add),
@@ -143,10 +123,9 @@ class HomePage extends GetView<HomeBloc> {
   /// show edit screen and update UI : records list and states related to it
   void _showEditDialog(BuildContext context, int index) async {
     controller.newRecord = false;
-    dismissKeyboard();
 
     if (!controller.records[index].isSubmitted) {
-      RecordModel? result = await showDialog(
+      var result = await showDialog(
         context: context,
         builder: (_) => EditRecord(record: controller.records[index]),
       );
@@ -155,16 +134,5 @@ class HomePage extends GetView<HomeBloc> {
         controller.updateRecord(result, index);
       }
     }
-  }
-
-  ///This is a basic function to open keyboard.
-  void showKeyboard() {
-    focusNode.requestFocus();
-  }
-
-  /// close opened keyboard
-  void dismissKeyboard() {
-    recordTextController.clear();
-    focusNode.unfocus();
   }
 }
