@@ -17,6 +17,7 @@ class DurationTags extends StatefulWidget {
 
 class _DurationTagsState extends State<DurationTags> {
   TagModel selected = TagModel(hour: 0);
+  final int _tagsCount = 13;
 
   /// selected value of tag
   int get value => selected.hour;
@@ -25,7 +26,7 @@ class _DurationTagsState extends State<DurationTags> {
   void initState() {
     super.initState();
 
-    for (var i = 1; i < 13; i++) {
+    for (var i = 1; i < _tagsCount; i++) {
       widget._hours.add(TagModel(hour: i));
     }
 

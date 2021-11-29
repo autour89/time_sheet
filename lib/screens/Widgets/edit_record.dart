@@ -12,7 +12,6 @@ class EditRecord extends StatefulWidget {
 }
 
 class _EditRecordState extends State<EditRecord> {
-  late DurationTags tags;
   final TextEditingController _recordTextController = TextEditingController();
   final String _hintText = 'Describe your task here...';
   final String _editTitle = 'Edit your record';
@@ -24,10 +23,6 @@ class _EditRecordState extends State<EditRecord> {
   @override
   void initState() {
     _recordTextController.text = widget.record.title;
-    tags = DurationTags(
-      duration: widget.record.duration.inHours,
-      onChange: (tag) => widget.record.duration = Duration(hours: tag),
-    );
     super.initState();
   }
 
@@ -43,7 +38,10 @@ class _EditRecordState extends State<EditRecord> {
           ),
           TextButton(
             child: Text(_saveTitle),
-            onPressed: () => {Navigator.pop(context, widget.record)},
+            onPressed: () => {
+              widget.record.title = _recordTextController.text,
+              Navigator.pop(context, widget.record)
+            },
           ),
         ]);
   }
@@ -57,7 +55,14 @@ class _EditRecordState extends State<EditRecord> {
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [Text(_durationTitle), tags],
+            children: [
+              Text(_durationTitle),
+              DurationTags(
+                duration: widget.record.duration.inHours,
+                onChange: (tag) =>
+                    widget.record.duration = Duration(hours: tag),
+              )
+            ],
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,10 +71,8 @@ class _EditRecordState extends State<EditRecord> {
               Switch(
                 value: widget.record.isSubmitted,
                 onChanged: (_) {
-                  setState(() {
-                    widget.record.state =
-                        _ ? RecordState.submitted : RecordState.active;
-                  });
+                  widget.record.state =
+                      _ ? RecordState.submitted : RecordState.active;
                 },
               )
             ],
@@ -83,7 +86,6 @@ class _EditRecordState extends State<EditRecord> {
               hintText: _hintText,
               border: OutlineInputBorder(),
             ),
-            onChanged: (text) => widget.record.title = text,
           )
         ],
       )),
