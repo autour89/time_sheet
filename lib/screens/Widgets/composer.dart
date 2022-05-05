@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:time_sheet/blocs/HomeBloc.dart';
+import 'package:time_sheet/generated/l10n.dart';
 
 class Composer extends StatelessWidget {
-  final String _hintText = 'Describe your task here...';
   final FocusNode focusNode = FocusNode();
   final TextEditingController recordTextController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return _buildComposer();
+    return _buildComposer(context);
   }
 
   bool _updateState(HomeBloc bloc) {
@@ -22,7 +22,7 @@ class Composer extends StatelessWidget {
     return bloc.composerActive;
   }
 
-  Widget _buildComposer() {
+  Widget _buildComposer(BuildContext context) {
     return GetBuilder<HomeBloc>(
         builder: (c) => Visibility(
               visible: _updateState(c),
@@ -48,7 +48,8 @@ class Composer extends StatelessWidget {
                             minLines: 1,
                             maxLines: 5,
                             decoration: InputDecoration(
-                                border: InputBorder.none, hintText: _hintText),
+                                border: InputBorder.none,
+                                hintText: S.of(context).descibeTask),
                           ),
                         ),
                         Expanded(
@@ -58,7 +59,7 @@ class Composer extends StatelessWidget {
                               c.addRecord(recordTextController.text),
                             },
                             child: FittedBox(
-                              child: Text('Create'),
+                              child: Text(S.of(context).createTask),
                             ),
                           ),
                         )

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:time_sheet/generated/l10n.dart';
 import 'package:time_sheet/models/RecordModel.dart';
 import 'package:time_sheet/screens/Widgets/duration_tags.dart';
 
@@ -13,12 +14,6 @@ class EditRecord extends StatefulWidget {
 
 class _EditRecordState extends State<EditRecord> {
   final TextEditingController _recordTextController = TextEditingController();
-  final String _hintText = 'Describe your task here...';
-  final String _editTitle = 'Edit your record';
-  final String _durationTitle = 'Duration';
-  final String _submittedTitle = 'Is submitted';
-  final String _cancelTitle = 'Cancel';
-  final String _saveTitle = 'Save';
 
   @override
   void initState() {
@@ -29,15 +24,15 @@ class _EditRecordState extends State<EditRecord> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-        title: Text(_editTitle),
+        title: Text(S.of(context).editTitle),
         content: _buildEditScreen(),
         actions: [
           TextButton(
-            child: Text(_cancelTitle),
+            child: Text(S.of(context).cancelTitle),
             onPressed: Navigator.of(context).pop,
           ),
           TextButton(
-            child: Text(_saveTitle),
+            child: Text(S.of(context).saveTitle),
             onPressed: () => {
               widget.record.title = _recordTextController.text,
               Navigator.pop(context, widget.record)
@@ -56,7 +51,7 @@ class _EditRecordState extends State<EditRecord> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(_durationTitle),
+              Text(S.of(context).durationTitle),
               DurationTags(
                 duration: widget.record.duration.inHours,
                 onChange: (tag) =>
@@ -67,7 +62,7 @@ class _EditRecordState extends State<EditRecord> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(_submittedTitle),
+              Text(S.of(context).submittedTitle),
               Switch(
                 value: widget.record.isSubmitted,
                 onChanged: (_) {
@@ -83,7 +78,7 @@ class _EditRecordState extends State<EditRecord> {
             minLines: 2,
             maxLines: 5,
             decoration: InputDecoration(
-              hintText: _hintText,
+              hintText: S.of(context).descibeTask,
               border: OutlineInputBorder(),
             ),
           )

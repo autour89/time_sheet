@@ -1,0 +1,11 @@
+{
+    "addRecord": "Add new record",
+    "descibeTask": "Describe your task here...",
+    "createTask": "Create",
+    "noTasks": "No Tasks",
+    "editTitle": "Edit your record",
+    "durationTitle": "Duration",
+    "submittedTitle": "Is submitted",
+    "cancelTitle": "Cancel",
+    "saveTitle": "Save"
+}

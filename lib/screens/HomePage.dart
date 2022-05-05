@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:time_sheet/blocs/HomeBloc.dart';
+import 'package:time_sheet/generated/l10n.dart';
 import 'package:time_sheet/screens/Widgets/composer.dart';
 import 'package:time_sheet/screens/Widgets/records_list.dart';
 import 'package:time_sheet/screens/Widgets/search_bar.dart';
@@ -31,7 +32,7 @@ class HomePage extends GetView<HomeBloc> {
                 onPressed: () => {
                   c.newRecord = true,
                 },
-                tooltip: 'Add new record',
+                tooltip: S.of(context).addRecord,
                 child: Icon(Icons.add),
               ),
             ));
